@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>QR Scanner V2</title>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+
+body{
+font-family: Arial;
+text-align:center;
+margin:0;
+background:#f4f4f4;
+}
+
+header{
+background:#222;
+color:white;
+padding:15px;
+font-size:20px;
+}
+
+.container{
+max-width:500px;
+margin:auto;
+padding:20px;
+}
+
+#reader{
+width:100%;
+border:2px solid #333;
+border-radius:8px;
+}
+
+.resultBox{
+margin-top:20px;
+padding:15px;
+background:white;
+border-radius:8px;
+font-size:18px;
+}
+
+button{
+margin:10px;
+padding:12px 20px;
+font-size:16px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+.startBtn{
+background:#2ecc71;
+color:white;
+}
+
+.stopBtn{
+background:#e74c3c;
+color:white;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+QR Attendance Scanner
+</header>
+
+<div class="container">
+
+<div id="reader"></div>
+
+<div class="resultBox">
+Scan Result:
+<div id="result">waiting...</div>
+</div>
+
+</div>
+
+<script>
+
+let scanner;
+
+window.onload = startScanner;
+
+async function startScanner(){
+
+const cameras = await Html5Qrcode.getCameras();
+
+if(!cameras || cameras.length === 0){
+alert("No camera found");
+return;
+}
+
+let rearCamera = cameras[0].id;
+
+for(let cam of cameras){
+
+const label = cam.label.toLowerCase();
+
+if(label.includes("back") || label.includes("rear")){
+rearCamera = cam.id;
+}
+
+}
+
+scanner = new Html5Qrcode("reader");
+
+scanner.start(
+rearCamera,
+{
+fps:10,
+qrbox:{ width:250, height:250 }
+},
+(qrMessage)=>{
+document.getElementById("result").innerText = qrMessage;
+}
+);
+
+}
+
+function stopScanner(){
+if(scanner){
+scanner.stop();
+}
+}
+
+</script>
+
+</body>
+</html>
