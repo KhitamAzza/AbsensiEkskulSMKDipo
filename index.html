@@ -118,8 +118,14 @@ fps:10,
 qrbox:{ width:250, height:250 }
 },
 (qrMessage)=>{
+
 document.getElementById("result").innerText = qrMessage;
+if(navigator.vibrate){
+  navigator.vibrate(100);
 }
+
+}
+
 );
 
 }
